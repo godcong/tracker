@@ -1,4 +1,10 @@
 BT 服务器: 
+http://sukebei.tracker.wf:8888/announce
+http://ehtracker.org/1445135/announce
+udp://open.stealth.si:80/announce
+udp://tracker.opentrackr.org:1337/announce
+udp://tracker.coppersurfer.tk:6969/announce
+udp://exodus.desync.com:6969/announce
 udp://tracker.bittrace.net:2712/announce
 http://tracker.city9x.com:2710/announce
 http://retracker.mgts.by/announce
