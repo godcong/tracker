@@ -48,8 +48,8 @@ func main() {
 			os.Mkdir(toPath, os.ModePerm)
 			moves := getFiles(file)
 			for _, subFile := range moves {
-				_, subFile = filepath.Split(subFile)
-				e = moveFile(file, filepath.Join(toPath, subFile))
+				_, toSubFile := filepath.Split(subFile)
+				e = moveFile(subFile, filepath.Join(toPath, toSubFile))
 				if e != nil {
 					fmt.Println(e)
 				}
