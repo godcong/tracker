@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 )
@@ -103,6 +104,7 @@ func moveFile(sourcePath, destPath string) error {
 
 	_, err = os.Open(destPath)
 	if !os.IsNotExist(err) {
+		log.Println("exist:", destPath)
 		return errors.New("exist return")
 	}
 
