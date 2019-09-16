@@ -42,8 +42,7 @@ func main() {
 			continue
 		}
 		_, toFile := filepath.Split(file)
-		//last := len(toFile) - 1
-		fmt.Println("to:", toFile)
+		fmt.Println("move:", toFile)
 		if info.IsDir() {
 			toPath := filepath.Join(sTo, toFile)
 			_ = os.MkdirAll(toPath, os.ModePerm)
@@ -53,12 +52,14 @@ func main() {
 				e = moveFile(subFile, filepath.Join(toPath, toSubFile))
 				if e != nil {
 					fmt.Println(e)
+					continue
 				}
 			}
 		} else {
 			e = moveFile(file, filepath.Join(sTo, toFile))
 			if e != nil {
 				fmt.Println(e)
+				continue
 			}
 		}
 	}
