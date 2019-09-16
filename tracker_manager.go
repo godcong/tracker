@@ -12,7 +12,7 @@ import (
 func main() {
 	src := flag.String("src", "tracker.txt", "set the file source")
 	target := flag.String("target", "ouput.txt", "set the output filename")
-	aria := flag.Bool("aria",true,"set the bool to open aria format")
+	aria := flag.Bool("aria", true, "set the bool to open aria format")
 	flag.Parse()
 
 	file, e := os.Open(*src)

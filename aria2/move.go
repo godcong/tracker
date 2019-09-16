@@ -17,6 +17,7 @@ func main() {
 	if e != nil {
 		panic(e)
 	}
+
 	files := getFiles(sFrom)
 	fmt.Println("file:", files)
 	fmt.Println("from:", *from)
@@ -28,24 +29,24 @@ func main() {
 	if e != nil {
 		panic(e)
 	}
-	os.Mkdir(sTo, os.ModePerm)
+	//os.Mkdir(sTo, os.ModePerm)
 	for _, file := range files {
-		_, e := os.Open(file + ".aria2")
-		if !os.IsNotExist(e) {
-			fmt.Println("unfinished", file, "continue", e)
+		if !checkFinish(file) {
+			fmt.Println("unfinished:", file)
 			continue
 		}
 
 		info, e := os.Stat(file)
 		if e != nil {
 			fmt.Println("error:", e)
+			continue
 		}
 		_, toFile := filepath.Split(file)
 		//last := len(toFile) - 1
-		fmt.Println("toFile:", toFile)
+		fmt.Println("to:", toFile)
 		if info.IsDir() {
 			toPath := filepath.Join(sTo, toFile)
-			os.Mkdir(toPath, os.ModePerm)
+			_ = os.MkdirAll(toPath, os.ModePerm)
 			moves := getFiles(file)
 			for _, subFile := range moves {
 				_, toSubFile := filepath.Split(subFile)
@@ -54,7 +55,7 @@ func main() {
 					fmt.Println(e)
 				}
 			}
-		}else{
+		} else {
 			e = moveFile(file, filepath.Join(sTo, toFile))
 			if e != nil {
 				fmt.Println(e)
@@ -69,6 +70,7 @@ func getFiles(path string) (files []string) {
 	if e != nil {
 		return nil
 	}
+
 	if info.IsDir() {
 		file, e := os.Open(path)
 		if e != nil {
@@ -83,16 +85,13 @@ func getFiles(path string) (files []string) {
 		for _, name := range names {
 			fullPath = filepath.Join(path, name)
 			if filepath.Ext(fullPath) == ".aria2" || filepath.Ext(fullPath) == ".torrent" {
-				fmt.Printf("continue path:%s\n", fullPath)
+				fmt.Printf("skip[%s]\n", fullPath)
 				continue
 			}
-			//tmp := getFiles(fullPath)
-			//if tmp != nil {
 			files = append(files, fullPath)
-			//}
 		}
-		//return files
 	}
+
 	return files
 }
 func moveFile(sourcePath, destPath string) error {
@@ -117,4 +116,12 @@ func moveFile(sourcePath, destPath string) error {
 		return fmt.Errorf("Failed removing original file: %s", err)
 	}
 	return nil
+}
+
+func checkFinish(path string) bool {
+	_, e := os.Open(path + ".aria2")
+	if !os.IsNotExist(e) {
+		return false
+	}
+	return true
 }
