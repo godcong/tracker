@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/pkg/errors"
 	"io"
 	"log"
 	"os"
@@ -21,8 +20,8 @@ func main() {
 	}
 
 	files := getFiles(sFrom)
-	fmt.Println("from:", *from)
-	fmt.Println("to:", *to)
+	log.Println("from:", *from)
+	log.Println("to:", *to)
 	if *to == "" {
 		panic(e)
 	}
@@ -33,17 +32,16 @@ func main() {
 	//os.Mkdir(sTo, os.ModePerm)
 	for _, file := range files {
 		if !checkFinish(file) {
-			fmt.Println("unfinished:", file)
+			log.Println(file, "unfinished")
 			continue
 		}
 
 		info, e := os.Stat(file)
 		if e != nil {
-			fmt.Println("error:", e)
-			continue
+			log.Fatal(e)
 		}
 		_, toFile := filepath.Split(file)
-		fmt.Println("move:", toFile)
+		log.Println(toFile, "move")
 		if info.IsDir() {
 			toPath := filepath.Join(sTo, toFile)
 			_ = os.MkdirAll(toPath, os.ModePerm)
@@ -87,7 +85,7 @@ func getFiles(path string) (files []string) {
 		for _, name := range names {
 			fullPath = filepath.Join(path, name)
 			if filepath.Ext(fullPath) == ".aria2" || filepath.Ext(fullPath) == ".torrent" {
-				fmt.Printf("skip[%s]\n", fullPath)
+				log.Printf("%s skip\n", fullPath)
 				continue
 			}
 			files = append(files, fullPath)
@@ -104,8 +102,8 @@ func moveFile(sourcePath, destPath string) error {
 
 	_, err = os.Open(destPath)
 	if !os.IsNotExist(err) {
-		log.Println("exist:", destPath)
-		return errors.New("exist return")
+		log.Println(destPath, "exist")
+		return nil
 	}
 
 	outputFile, err := os.Create(destPath)
