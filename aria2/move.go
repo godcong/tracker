@@ -20,7 +20,6 @@ func main() {
 	}
 
 	files := getFiles(sFrom)
-	fmt.Println("file:", files)
 	fmt.Println("from:", *from)
 	fmt.Println("to:", *to)
 	if *to == "" {
