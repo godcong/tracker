@@ -62,7 +62,7 @@ func main() {
 			}
 		}
 	}
-
+	log.Println("all finished")
 }
 
 func getFiles(path string) (files []string) {
