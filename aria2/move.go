@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/pkg/errors"
 	"io"
 	"os"
 	"path/filepath"
@@ -99,6 +100,12 @@ func moveFile(sourcePath, destPath string) error {
 	if err != nil {
 		return fmt.Errorf("couldn't open source file: %s", err)
 	}
+
+	_, err = os.Open(destPath)
+	if !os.IsNotExist(err) {
+		return errors.New("exist return")
+	}
+
 	outputFile, err := os.Create(destPath)
 	if err != nil {
 		inputFile.Close()
