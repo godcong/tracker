@@ -47,9 +47,9 @@ output:
 		outFile.WriteString(key)
 		if *aria {
 			outFile.WriteString(",")
-			continue
+		} else {
+			outFile.WriteString("\n")
 		}
-		outFile.WriteString("\n")
 	}
 
 }
