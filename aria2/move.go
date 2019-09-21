@@ -105,7 +105,13 @@ func moveFile(sourcePath, destPath string) error {
 		log.Println(destPath, "exist")
 		return nil
 	}
-
+	err = os.Rename(sourcePath, destPath)
+	if err != nil {
+		fmt.Println("not same disk:", sourcePath, destPath, err)
+	} else {
+		fmt.Println("same disk:", sourcePath, destPath)
+		return nil
+	}
 	outputFile, err := os.Create(destPath)
 	if err != nil {
 		inputFile.Close()
