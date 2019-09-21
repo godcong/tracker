@@ -44,18 +44,18 @@ func main() {
 		log.Println(toFile, "move")
 		if info.IsDir() {
 			toPath := filepath.Join(sTo, toFile)
-			_ = os.MkdirAll(toPath, os.ModePerm)
+			//_ = os.MkdirAll(toPath, os.ModePerm)
 			moves := getFiles(file)
 			for _, subFile := range moves {
 				_, toSubFile := filepath.Split(subFile)
-				e = moveFile(subFile, filepath.Join(toPath, toSubFile))
+				e = moveFile(subFile, toPath, toSubFile)
 				if e != nil {
 					fmt.Println(e)
 					continue
 				}
 			}
 		} else {
-			e = moveFile(file, filepath.Join(sTo, toFile))
+			e = moveFile(file, sTo, toFile)
 			if e != nil {
 				fmt.Println(e)
 				continue
@@ -94,25 +94,27 @@ func getFiles(path string) (files []string) {
 
 	return files
 }
-func moveFile(sourcePath, destPath string) error {
+func moveFile(sourcePath, toPath, destFile string) error {
 	inputFile, err := os.Open(sourcePath)
 	if err != nil {
 		return fmt.Errorf("couldn't open source file: %s", err)
 	}
-
-	_, err = os.Open(destPath)
+	//ignore error
+	_ = os.MkdirAll(toPath, os.ModePerm)
+	dest := filepath.Join(toPath, destFile)
+	_, err = os.Open(dest)
 	if !os.IsNotExist(err) {
-		log.Println(destPath, "exist")
+		log.Println(dest, "exist")
 		return nil
 	}
-	err = os.Rename(sourcePath, destPath)
+	err = os.Rename(sourcePath, dest)
 	if err != nil {
-		fmt.Println("not same disk:", sourcePath, destPath, err)
+		fmt.Println("not same disk:", sourcePath, dest, err)
 	} else {
-		fmt.Println("same disk:", sourcePath, destPath)
+		fmt.Println("same disk:", sourcePath, dest)
 		return nil
 	}
-	outputFile, err := os.Create(destPath)
+	outputFile, err := os.Create(dest)
 	if err != nil {
 		inputFile.Close()
 		return fmt.Errorf("couldn't open dest file: %s", err)
