@@ -25,6 +25,7 @@ func main() {
 	files := getFiles(*filepath)
 
 	for _, file := range files {
+		log.Println("add file:", file)
 		gid, e := client.AddTorrent(file)
 		if e != nil {
 			log.Println(e)
