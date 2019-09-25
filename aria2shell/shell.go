@@ -15,6 +15,7 @@ func main() {
 	rpcSecre := flag.String("secret", "", "set --rpc-secret for aria2c")
 	rpcURI := flag.String("uri", "http://localhost:6800/jsonrpc", "set rpc address")
 	filepath := flag.String("path", ".", "get torrent files")
+	move := flag.String("to", "./success", "move file when success")
 	flag.Parse()
 
 	client, e := rpc.New(context.Background(), *rpcURI, *rpcSecre, 3*time.Second, nil)
@@ -29,6 +30,7 @@ func main() {
 			log.Println(e)
 			continue
 		}
+		log.Println("to", *move)
 		log.Println("gid", gid)
 	}
 }
