@@ -34,6 +34,7 @@ func main() {
 		log.Println("to", *move)
 		log.Println("gid", gid)
 	}
+	log.Println("all was done")
 }
 
 func getFiles(path string) (files []string) {
