@@ -12,6 +12,7 @@ import (
 func main() {
 	from := flag.String("from", "./", "from path")
 	to := flag.String("to", "", "to path")
+	remove := flag.Bool("remove", false, "remove if file is the same and exist")
 	flag.Parse()
 
 	sFrom, e := filepath.Abs(*from)
@@ -48,14 +49,14 @@ func main() {
 			moves := getFiles(file)
 			for _, subFile := range moves {
 				_, toSubFile := filepath.Split(subFile)
-				e = moveFile(subFile, toPath, toSubFile)
+				e = moveFile(subFile, toPath, toSubFile, *remove)
 				if e != nil {
 					fmt.Println(e)
 					continue
 				}
 			}
 		} else {
-			e = moveFile(file, sTo, toFile)
+			e = moveFile(file, sTo, toFile, *remove)
 			if e != nil {
 				fmt.Println(e)
 				continue
@@ -94,7 +95,7 @@ func getFiles(path string) (files []string) {
 
 	return files
 }
-func moveFile(sourcePath, toPath, destFile string) error {
+func moveFile(sourcePath, toPath, destFile string, remove bool) error {
 	inputFile, err := os.Open(sourcePath)
 	if err != nil {
 		return fmt.Errorf("couldn't open source file: %s", err)
@@ -102,14 +103,29 @@ func moveFile(sourcePath, toPath, destFile string) error {
 	//ignore error
 	_ = os.MkdirAll(toPath, os.ModePerm)
 	dest := filepath.Join(toPath, destFile)
-	_, err = os.Open(dest)
+	info, err := os.Stat(dest)
 	if !os.IsNotExist(err) {
 		log.Println(dest, "exist")
+		if remove {
+			sourceInfo, err := inputFile.Stat()
+			if err != nil {
+				return err
+			}
+			if info.Size() == sourceInfo.Size() {
+				fmt.Println("remove:", sourcePath)
+				return os.Remove(sourcePath)
+			}
+			fmt.Println("skip remove:", sourcePath)
+		}
+
 		return nil
 	}
+
 	err = os.Rename(sourcePath, dest)
 	if err != nil {
-		fmt.Println("not same disk:", sourcePath, dest, err)
+		fmt.Println("not same disk:", sourcePath, dest)
+		fmt.Println(err)
+
 	} else {
 		fmt.Println("same disk:", sourcePath, dest)
 		return nil
