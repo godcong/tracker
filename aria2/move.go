@@ -112,10 +112,10 @@ func moveFile(sourcePath, toPath, destFile string, remove bool) error {
 				return err
 			}
 			if info.Size() == sourceInfo.Size() {
-				fmt.Println("remove:", sourcePath)
+				log.Println("remove:", sourcePath)
 				return os.Remove(sourcePath)
 			}
-			fmt.Println("skip remove:", sourcePath)
+			log.Println("skip remove:", sourcePath)
 		}
 
 		return nil
@@ -123,11 +123,11 @@ func moveFile(sourcePath, toPath, destFile string, remove bool) error {
 
 	err = os.Rename(sourcePath, dest)
 	if err != nil {
-		fmt.Println("not same disk:", sourcePath, dest)
-		fmt.Println(err)
+		log.Println("not same disk:", sourcePath, dest)
+		log.Println(err)
 
 	} else {
-		fmt.Println("same disk:", sourcePath, dest)
+		log.Println("same disk:", sourcePath, dest)
 		return nil
 	}
 	outputFile, err := os.Create(dest)
