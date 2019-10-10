@@ -16,9 +16,9 @@ func main() {
 
 	file, e := os.Open(*from)
 	if e != nil {
-		return
+		panic(e)
 	}
-
+	_ = os.MkdirAll(*output, os.ModePerm)
 	reader := bufio.NewReader(file)
 ReadEnd:
 	for {
