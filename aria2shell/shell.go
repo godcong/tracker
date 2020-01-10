@@ -18,7 +18,7 @@ func main() {
 	move := flag.String("to", "./success", "move file when success")
 	flag.Parse()
 
-	client, e := rpc.New(context.Background(), *rpcURI, *rpcSecre, 3*time.Second, nil)
+
 	if e != nil {
 		log.Fatal(e)
 	}
